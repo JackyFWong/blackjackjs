@@ -11,29 +11,30 @@ var hand = [];
 var handScore = 0;
 var suits = ["c", "d", "h", "s"];
 
-function addPoints(score, card) {
-    if (typeof card == "number")
-        score += card;
+function addPoints(card) {
+    if (typeof card === "number")
+        return card;
     else
-        score += 10;
+        return 10;
 }
 
 // true if enemy draws again
 // false if enemy stops
+// get a random integer from 0 to enemyScore
+// this is intended to make it less likely to draw again if the score is higher
 function drawChance() {
-    // get a random integer from 0-total of enemy points
     var chance = Math.floor(Math.random() * enemyScore);
-    if (chance % enemyScore === 1) { return true; }
+    if (chance === 1) { return true; }
     else { return false; }
 }
 
 function drawAction(player) {
     // get a random card via random index
     var ind = Math.floor(Math.random() * (deck.length - 1));
-    var curCard = player.push(deck.splice(ind, 1));
+    var newLen = player.push(deck[ind]);
 
-    if (player === "enemy") {
-        addPoints(enemyScore, curCard[1]);
+    if (player === enemy) {
+        enemyScore += addPoints(player[newLen - 1][1]);
         if (enemyScore > 21) {
             window.alert("Enemy has lost! Over 21");
         }
@@ -44,7 +45,7 @@ function drawAction(player) {
         }
     }
     else {
-        addPoints(handScore, curCard[1]);
+        handScore += addPoints(player[newLen - 1][1]);
         if (handScore > 21) {
             window.alert("You have lost! Over 21");
         }
@@ -52,7 +53,7 @@ function drawAction(player) {
             // update cards display
             var cardsPlayer = "";
             for (var i = 0; i < hand.length; i++) {
-                cardsPlayer = cardsPlayer + " " + hand[i][0];
+                cardsPlayer = cardsPlayer + hand[i] + " | ";
             }
             document.getElementById("info").innerHTML = "Your cards: " + cardsPlayer;
         }
@@ -62,6 +63,10 @@ function drawAction(player) {
 function start() {
     // reset and build deck
     deck = [];
+    enemy = [];
+    enemyScore = 0;
+    hand = [];
+    handScore = 0;   
     var ind = 0;
     for (var i = 0; i < 4; i++) {
         for (var j = 1; j <= 10; j++) {
@@ -80,11 +85,11 @@ function start() {
     drawAction(enemy);
 
     // update html
-    var cardsPlayer = hand[0][0] + " | " + hand[1][0];
+    var cardsPlayer = hand[0] + " | " + hand[1];
     document.getElementById("info").innerHTML = "Your cards: " + cardsPlayer;
 
     // this never updates as you dont get to see new enemy cards
-    var cardsEnemy = enemy[0][0] + enemy[0][1];
+    var cardsEnemy = enemy[0];
     document.getElementById("enemy").innerHTML = "Enemy faceup card: " + cardsEnemy;
 }
 
@@ -98,14 +103,17 @@ function stand() {
     if (enemyScore > handScore) {
         document.getElementById("info").innerHTML = "Enemy has won";
         document.getElementById("enemy").innerHTML = "";
+        alert("Enemy has won");
     }
     else if (enemyScore < handScore) {
         document.getElementById("info").innerHTML = "You have won!";
         document.getElementById("enemy").innerHTML = "";
+        alert("You have won!");
     }
     else {
         document.getElementById("info").innerHTML = "Tie game";
         document.getElementById("enemy").innerHTML = "";
+        alert("Tie game!");
     }
 }
 
