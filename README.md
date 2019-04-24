@@ -5,6 +5,8 @@ This is made for a project in GC 3400 at Clemson University, Spring 2019.
 
 This is also my first JavaScript project, so it is not optimal whatsoever.
 
+<img align="middle" src="demo.png" width="848" height="480" />
+
 ### About the game
 As the website states, you play against one computer opponent. This game has some modified rules:
 - Ace is only worth 1 point
